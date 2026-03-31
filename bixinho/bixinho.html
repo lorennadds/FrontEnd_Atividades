@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Meu Bichinho</title>
+
+  <style>
+    body {
+      margin: 0;
+      height: 100vh;
+      overflow: hidden;
+      background-color: #f5d6ed;
+    }
+
+    .container {
+      position: relative;
+      width: 100%;
+      height: 100%;
+    }
+
+    #fundo {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: 1;
+      opacity: 1;
+      transition: opacity 0.8s ease-in-out;
+    }
+
+    #fundo.trocando {
+      opacity: 0;
+    }
+
+    #bicho {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 260px;
+      z-index: 2;
+    }
+
+    #btn {
+      position: absolute;
+      right: 40px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 120px;
+      cursor: pointer;
+      z-index: 3;
+    }
+
+    #btn:active {
+      transform: translateY(-50%) scale(0.9);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <img id="fundo" src="casa.png" alt="Fundo">
+    <img id="bicho" src="c.png" alt="Coelho">
+    <img id="btn" src="ceno.png" alt="Botão de alimentar">
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
