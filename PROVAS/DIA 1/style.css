@@ -1,0 +1,157 @@
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Georgia', serif;
+      background-color: #DADADA;
+      color: #3a4a5a;
+      line-height: 1.8;
+    }
+
+    header {
+      background-color: #5D7599;
+      padding: 2.5rem 2rem 1.8rem;
+      text-align: center;
+    }
+
+    header h1 {
+      font-size: 2.6rem;
+      color: #F7F0C6;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      margin-bottom: 0.4rem;
+    }
+
+    header p {
+      font-size: 1rem;
+      color: #DADADA;
+      font-style: italic;
+    }
+
+    nav {
+      background-color: #ABB6C8;
+      padding: 0 2rem;
+      display: flex;
+      justify-content: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      border-bottom: 2px solid #5D7599;
+    }
+
+    nav a {
+      display: inline-block;
+      padding: 1rem 1.8rem;
+      color: #3a4a5a;
+      text-decoration: none;
+      font-size: 0.88rem;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      font-family: Arial, sans-serif;
+      border-bottom: 3px solid transparent;
+      transition: color 0.2s, border-color 0.2s;
+    }
+
+    nav a:hover {
+      color: #5D7599;
+      border-bottom: 3px solid #5D7599;
+    }
+
+    main {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 3rem 2rem;
+    }
+
+    section {
+      background-color: #F7F0C6;
+      border-radius: 6px;
+      padding: 2rem 2.2rem;
+      margin-bottom: 2.5rem;
+      scroll-margin-top: 70px;
+      border-left: 5px solid #5D7599;
+    }
+
+    section h2 {
+      font-size: 1.5rem;
+      color: #5D7599;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      margin-bottom: 1.2rem;
+      padding-bottom: 0.6rem;
+      border-bottom: 1px solid #C2C4B6;
+    }
+
+    section p {
+      font-size: 1.05rem;
+      color: #3a4a5a;
+      margin-bottom: 1rem;
+    }
+
+    section p:last-child {
+      margin-bottom: 0;
+    }
+
+    .destaque {
+      background-color: #C2C4B6;
+      border-left: 4px solid #ABB6C8;
+      padding: 1rem 1.4rem;
+      border-radius: 0 4px 4px 0;
+      margin-top: 1.2rem;
+    }
+
+    .destaque p {
+      margin: 0;
+      font-style: italic;
+      color: #4a5a6a;
+      font-size: 0.98rem;
+    }
+
+ #secao-tabela {
+      text-align: center;
+      margin: 0 auto 2.5rem;
+      max-width: 860px;
+      padding: 0 2rem;
+    }
+ 
+    #btn-tabela {
+      background-color: #5D7599;
+      color: #F7F0C6;
+      border: none;
+      padding: 0.9rem 2.2rem;
+      font-size: 1rem;
+      font-family: Arial, sans-serif;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+ 
+    #btn-tabela:hover {
+      background-color: #4a6080;
+    }
+ 
+    /* Imagem da tabela */
+    #tabela-jogos {
+      max-width: 100%;
+      border-radius: 6px;
+      margin-top: 1.5rem;
+      border: 3px solid #ABB6C8;
+      display: block;
+    }
+ 
+
+    footer {
+      text-align: center;
+      padding: 2rem;
+      background-color: #5D7599;
+      color: #DADADA;
+      font-size: 0.85rem;
+      font-family: Arial, sans-serif;
+    }
+

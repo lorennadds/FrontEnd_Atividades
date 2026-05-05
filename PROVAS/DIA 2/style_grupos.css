@@ -1,0 +1,145 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    background: linear-gradient(135deg, #e8f5e9, #e3f2fd);
+    color: #1a1a2e;
+    min-height: 100vh;
+}
+
+#cabecalho {
+    background-color: #1b5e20;
+    color: #ffffff;
+    text-align: center;
+    padding: 3rem 1rem;
+    border-bottom: 6px solid #f9a825;
+}
+
+#cabecalho h1 {
+    font-size: 2.8rem;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-bottom: 0.5rem;
+}
+
+#cabecalho h4 {
+    font-size: 1rem;
+    font-weight: normal;
+    color: #a5d6a7;
+    font-style: italic;
+
+}
+
+#conteudo {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 2.5rem;
+  padding: 3.5rem 2rem;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.card-grupo {
+  background-color: #ffffff;
+  border: 3px solid #1b5e20;
+  border-radius: 16px;
+  padding: 2rem;
+  width: 300px;
+  box-shadow: 6px 6px 0px #f9a825;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+ 
+.card-grupo:hover {
+  transform: translate(-3px, -3px);
+  box-shadow: 9px 9px 0px #f9a825;
+}
+ 
+.card-grupo h2 {
+  font-size: 1.6rem;
+  color: #1b5e20;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px dashed #f9a825;
+}
+ 
+.card-grupo h5 {
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: #888;
+  margin-bottom: 0.5rem;
+}
+ 
+card-grupo ul {
+  list-style: none;
+  margin-bottom: 1.2rem;
+}
+ 
+.card-grupo ul li {
+  padding: 0.5rem 0.8rem;
+  margin-bottom: 0.4rem;
+  font-size: 0.98rem;
+  color: #1a1a2e;
+  background-color: #f1f8e9;
+  border-radius: 6px;
+  border-left: 4px solid #1b5e20;
+}
+.card-grupo details {
+  margin-top: 1rem;
+  border-radius: 8px;
+  background-color: #fffde7;
+  border: 1px solid #f9a825;
+  padding: 0.7rem 1rem;
+}
+ 
+.card-grupo details summary {
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: bold;
+  color: #e65100;
+  letter-spacing: 0.5px;
+  user-select: none;
+}
+ 
+.card-grupo details p {
+  margin-top: 0.6rem;
+  font-size: 0.9rem;
+  color: #4a4a4a;
+  font-style: italic;
+  line-height: 1.6;
+}
+
+
+
+
+div-botao {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 1rem 0 2.5rem;
+}
+ 
+#btn-proximo {
+  background-color: #10650899;
+  color: #ffffff;
+  border: none;
+  border-radius: 6px;
+  padding: 0.9rem 2.5rem;
+  font-size: 1rem;
+  font-family: Arial, sans-serif;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+ 
+#btn-proximo:hover {
+  background-color: #4a6080;
+}
+ 
