@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Termo</title>
+<style>
+  body { margin: 0; }
+  .termo {
+    min-height: 100vh;
+    width: 100%;
+    background: #fdf6e9;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-family: Georgia, "Times New Roman", serif;
+    padding: 24px 16px 40px;
+    color: #2c2a25;
+    box-sizing: border-box;
+  }
+  .termo-header {
+    width: 100%;
+    max-width: 420px;
+    text-align: center;
+    border-bottom: 2px solid #2c2a25;
+    padding-bottom: 12px;
+    margin-bottom: 20px;
+  }
+  .termo-header h1 { font-size: 32px; margin: 0; letter-spacing: 4px; font-weight: 700; }
+  .termo-header p { margin: 4px 0 0; font-size: 13px; opacity: 0.7; }
+  .termo-mensagem {
+    position: relative;
+    min-height: 28px;
+    margin-bottom: 12px;
+    font-family: "Courier New", monospace;
+    font-size: 13px;
+    font-weight: 700;
+    color: #fdf6e9;
+    border-radius: 4px;
+    background: transparent;
+  }
+  .termo-mensagem.ativa { background: #2c2a25; padding: 6px 14px; }
+  .termo-tabuleiro { display: grid; gap: 6px; margin-bottom: 24px; }
+  .termo-linha { display: flex; gap: 6px; }
+  .termo-letra {
+    width: 52px; height: 52px;
+    border: 2px solid #d8d0bd;
+    display: flex; align-items: center; justify-content: center;
+    font-family: "Courier New", monospace;
+    font-size: 26px; font-weight: 700; text-transform: uppercase;
+    box-sizing: border-box; background: transparent; color: #2c2a25;
+  }
+  .termo-letra.ocupada { border-color: #2c2a25; }
+  .termo-letra.correta { border: none; background: #3a7d56; color: #fdf6e9; }
+  .termo-letra.presente { border: none; background: #c98a2c; color: #fdf6e9; }
+  .termo-letra.ausente { border: none; background: #54514a; color: #fdf6e9; }
+  .termo-teclado { width: 100%; max-width: 480px; }
+  .termo-teclado-linha { display: flex; justify-content: center; gap: 6px; margin-bottom: 6px; }
+  .termo-tecla {
+    flex: 1 1 0; min-width: 28px; height: 46px;
+    border: none; border-radius: 4px;
+    background: #e4dcc8; color: #2c2a25;
+    font-weight: 700; font-size: 15px;
+    font-family: "Courier New", monospace; cursor: pointer;
+  }
+  .termo-tecla:hover { filter: brightness(0.95); }
+  .termo-tecla.especial { flex: 1.5 1 0; min-width: 52px; font-size: 12px; }
+  .termo-tecla.correta { background: #3a7d56; color: #fdf6e9; }
+  .termo-tecla.presente { background: #c98a2c; color: #fdf6e9; }
+  .termo-tecla.ausente { background: #54514a; color: #fdf6e9; }
+  .termo-reiniciar {
+    margin-top: 20px; padding: 10px 24px;
+    background: #2c2a25; color: #fdf6e9;
+    border: none; border-radius: 4px;
+    font-family: Georgia, serif; font-size: 15px;
+    cursor: pointer; letter-spacing: 1px;
+  }
+  .termo-reiniciar:hover { filter: brightness(1.15); }
+</style>
+</head>
+<body>
+<div id="root"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.5/babel.min.js"></script>
+
+<script type="text/babel">
+const { useState, useEffect, useCallback } = React;
+
+const PALAVRAS = [
+  "AMIGO", "BANCO", "CARRO", "DOCES", "FESTA", "GRAOS", "HOTEL",
+  "IGUAL", "JOGOS", "LIVRO", "MUNDO", "NOITE", "PORTA", "QUEDA",
+  "RIQUE", "SONHO", "TERRA", "UNIAO", "VENTO", "ZEBRA",
+];
+
+const LINHAS_TOTAIS = 6;
+const TAMANHO_PALAVRA = 5;
+
+const TECLADO = [
+  ["Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P"],
+  ["A", "S", "D", "F", "G", "H", "J", "K", "L"],
+  ["ENTER", "Z", "X", "C", "V", "B", "N", "M", "⌫"],
+];
+
+function escolherPalavra() {
+  return PALAVRAS[Math.floor(Math.random() * PALAVRAS.length)];
+}
+
+function avaliarTentativa(tentativa, alvo) {
+  const resultado = new Array(TAMANHO_PALAVRA).fill("ausente");
+  const alvoArr = alvo.split("");
+  const usado = new Array(TAMANHO_PALAVRA).fill(false);
+
+  for (let i = 0; i < TAMANHO_PALAVRA; i++) {
+    if (tentativa[i] === alvoArr[i]) {
+      resultado[i] = "correta";
+      usado[i] = true;
+    }
+  }
+
+  for (let i = 0; i < TAMANHO_PALAVRA; i++) {
+    if (resultado[i] === "correta") continue;
+    const idx = alvoArr.findIndex((letra, j) => letra === tentativa[i] && !usado[j]);
+    if (idx !== -1) {
+      resultado[i] = "presente";
+      usado[idx] = true;
+    }
+  }
+
+  return resultado;
+}
+
+function Termo() {
+  const [alvo, setAlvo] = useState(escolherPalavra);
+  const [tentativas, setTentativas] = useState([]);
+  const [atual, setAtual] = useState("");
+  const [status, setStatus] = useState("jogando");
+  const [estadoTeclas, setEstadoTeclas] = useState({});
+  const [mensagem, setMensagem] = useState("");
+
+  const reiniciar = () => {
+    setAlvo(escolherPalavra());
+    setTentativas([]);
+    setAtual("");
+    setStatus("jogando");
+    setEstadoTeclas({});
+    setMensagem("");
+  };
+
+  const mostrarMensagem = (texto) => {
+    setMensagem(texto);
+    setTimeout(() => setMensagem(""), 1600);
+  };
+
+  const enviarTentativa = useCallback(() => {
+    if (atual.length !== TAMANHO_PALAVRA) {
+      mostrarMensagem("Faltam letras");
+      return;
+    }
+    const resultado = avaliarTentativa(atual.split(""), alvo);
+
+    setEstadoTeclas((prev) => {
+      const novo = { ...prev };
+      atual.split("").forEach((letra, i) => {
+        const nivel = { ausente: 0, presente: 1, correta: 2 };
+        const atualNivel = nivel[resultado[i]];
+        const existenteNivel = nivel[novo[letra]] ?? -1;
+        if (atualNivel > existenteNivel) novo[letra] = resultado[i];
+      });
+      return novo;
+    });
+
+    const novaLista = [...tentativas, { palavra: atual, resultado }];
+    setTentativas(novaLista);
+    setAtual("");
+
+    if (atual === alvo) {
+      setStatus("venceu");
+      mostrarMensagem("Mandou bem!");
+    } else if (novaLista.length === LINHAS_TOTAIS) {
+      setStatus("perdeu");
+      mostrarMensagem("Era " + alvo);
+    }
+  }, [atual, alvo, tentativas]);
+
+  const handleTecla = useCallback((tecla) => {
+    if (status !== "jogando") return;
+    if (tecla === "ENTER") {
+      enviarTentativa();
+    } else if (tecla === "⌫" || tecla === "BACKSPACE") {
+      setAtual((a) => a.slice(0, -1));
+    } else if (/^[A-Z]$/.test(tecla) && atual.length < TAMANHO_PALAVRA) {
+      setAtual((a) => a + tecla);
+    }
+  }, [atual, status, enviarTentativa]);
+
+  useEffect(() => {
+    const onKeyDown = (e) => {
+      const tecla = e.key.toUpperCase();
+      if (tecla === "BACKSPACE") handleTecla("⌫");
+      else if (tecla === "ENTER") handleTecla("ENTER");
+      else if (/^[A-Z]$/.test(tecla)) handleTecla(tecla);
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [handleTecla]);
+
+  const linhas = [];
+  for (let i = 0; i < LINHAS_TOTAIS; i++) {
+    if (i < tentativas.length) {
+      linhas.push(tentativas[i]);
+    } else if (i === tentativas.length) {
+      linhas.push({ palavra: atual, resultado: null });
+    } else {
+      linhas.push({ palavra: "", resultado: null });
+    }
+  }
+
+  return (
+    <div className="termo">
+      <header className="termo-header">
+        <h1>TERMO</h1>
+        <p>Edição caseira — adivinhe a palavra de 5 letras</p>
+      </header>
+
+      <div className={"termo-mensagem" + (mensagem ? " ativa" : "")}>
+        {mensagem}
+      </div>
+
+      <div className="termo-tabuleiro" style={{ gridTemplateRows: "repeat(" + LINHAS_TOTAIS + ", 1fr)" }}>
+        {linhas.map((linha, li) => (
+          <div key={li} className="termo-linha">
+            {Array.from({ length: TAMANHO_PALAVRA }).map((_, ci) => {
+              const letra = linha.palavra[ci] || "";
+              const estado = linha.resultado ? linha.resultado[ci] : null;
+              const ocupada = !!letra;
+              const classes = ["termo-letra"];
+              if (estado) classes.push(estado);
+              else if (ocupada) classes.push("ocupada");
+              return <div key={ci} className={classes.join(" ")}>{letra}</div>;
+            })}
+          </div>
+        ))}
+      </div>
+
+      <div className="termo-teclado">
+        {TECLADO.map((linha, li) => (
+          <div key={li} className="termo-teclado-linha">
+            {linha.map((tecla) => {
+              const estado = estadoTeclas[tecla];
+              const especial = tecla === "ENTER" || tecla === "⌫";
+              const classes = ["termo-tecla"];
+              if (especial) classes.push("especial");
+              if (estado) classes.push(estado);
+              return (
+                <button key={tecla} onClick={() => handleTecla(tecla)} className={classes.join(" ")}>
+                  {tecla}
+                </button>
+              );
+            })}
+          </div>
+        ))}
+      </div>
+
+      {status !== "jogando" && (
+        <button className="termo-reiniciar" onClick={reiniciar}>Jogar de novo</button>
+      )}
+    </div>
+  );
+}
+
+const root = ReactDOM.createRoot(document.getElementById("root"));
+root.render(<Termo />);
+</script>
+</body>
+</html>

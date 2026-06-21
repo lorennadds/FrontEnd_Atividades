@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tecnologias do Termo</title>
+<style>
+    :root{
+        --bg:#fdf6e9;
+        --ink:#2c2a25;
+        --linha:#d8d0bd;
+        --verde:#3a7d56;
+        --amarelo:#c98a2c;
+        --cinza:#54514a;
+    }
+    *{box-sizing:border-box}
+    body{
+        margin:0;
+        background:var(--bg);
+        color:var(--ink);
+        font-family:Georgia,'Times New Roman',serif;
+        line-height:1.65;
+    }
+    .container{max-width:760px;margin:0 auto;padding:48px 20px 80px}
+
+    header{
+        text-align:center;
+        border-bottom:2px solid var(--ink);
+        padding-bottom:20px;
+        margin-bottom:40px;
+    }
+    header h1{
+        font-size:34px;
+        letter-spacing:3px;
+        margin:0;
+        font-weight:700;
+    }
+    header p{
+        font-family:'Courier New',monospace;
+        font-size:13px;
+        opacity:.7;
+        margin:8px 0 0;
+    }
+
+    h2{
+        font-size:22px;
+        margin:48px 0 12px;
+        padding-bottom:6px;
+        border-bottom:1px solid var(--linha);
+    }
+    h3{
+        font-family:'Courier New',monospace;
+        font-size:15px;
+        margin:22px 0 6px;
+        color:var(--verde);
+    }
+    p{font-size:16px;margin:10px 0}
+
+    code{
+        font-family:'Courier New',monospace;
+        background:#f0e9d5;
+        padding:2px 6px;
+        border-radius:3px;
+        font-size:.9em;
+        color:#8a3b0b;
+    }
+
+    .lista-pecas{
+        list-style:none;
+        padding:0;
+        margin:18px 0;
+    }
+    .lista-pecas li{
+        display:flex;
+        gap:14px;
+        padding:10px 0;
+        border-bottom:1px solid var(--linha);
+        font-size:15px;
+    }
+    .lista-pecas li:last-child{border-bottom:none}
+    .lista-pecas .tag{
+        font-family:'Courier New',monospace;
+        font-weight:700;
+        min-width:120px;
+        flex-shrink:0;
+    }
+
+    .bloco-aviso{
+        background:#f0e9d5;
+        border-left:4px solid var(--amarelo);
+        padding:14px 18px;
+        margin:20px 0;
+        font-size:15px;
+    }
+
+    .selo-cores{
+        display:flex;
+        gap:10px;
+        margin:18px 0;
+        flex-wrap:wrap;
+    }
+    .selo{
+        font-family:'Courier New',monospace;
+        font-size:13px;
+        font-weight:700;
+        padding:8px 14px;
+        border-radius:4px;
+        color:#fdf6e9;
+    }
+    .selo.correta{background:var(--verde)}
+    .selo.presente{background:var(--amarelo)}
+    .selo.ausente{background:var(--cinza)}
+
+    table{
+        width:100%;
+        border-collapse:collapse;
+        margin:18px 0;
+        font-size:14.5px;
+    }
+    th,td{
+        border:1px solid var(--linha);
+        padding:8px 10px;
+        text-align:left;
+    }
+    th{
+        background:#f0e9d5;
+        font-family:'Courier New',monospace;
+        font-size:13px;
+    }
+
+    footer{
+        text-align:center;
+        margin-top:60px;
+        padding-top:20px;
+        border-top:1px solid var(--linha);
+        font-family:'Courier New',monospace;
+        font-size:12px;
+        opacity:.6;
+    }
+</style>
+</head>
+<body>
+<div class="container">
+
+    <header>
+        <h1>TECNOLOGIAS DO TERMO</h1>
+        <p>como o jogo foi construído, peça por peça</p>
+    </header>
+
+    <p>
+        Este jogo é um clone do <strong>Termo</strong> (a versão brasileira do Wordle), construído inteiramente
+        com <strong>React</strong>. A ideia aqui é abrir o capô e explicar por que cada tecnologia foi escolhida
+        e qual problema ela resolve dentro do jogo.
+    </p>
+
+    <h2>React</h2>
+    <p>
+        O jogo inteiro vive dentro de um único componente funcional, <code>Termo</code>. Isso faz sentido porque
+        o Termo é, na essência, uma máquina de estados visual: a cada tecla pressionada, só uma parte da tela muda
+        (a linha atual, o teclado, uma mensagem), e o resto continua igual. É exatamente o tipo de problema que o
+        React resolve bem — você descreve como a tela deve ficar para um determinado estado, e o React cuida de
+        atualizar só o necessário no DOM.
+    </p>
+
+    <h2>Hooks utilizados</h2>
+
+    <h3>useState</h3>
+    <p>Cada pedaço de informação que muda durante a partida vira um estado independente:</p>
+    <ul class="lista-pecas">
+        <li><span class="tag">alvo</span> a palavra secreta sorteada no início da partida</li>
+        <li><span class="tag">tentativas</span> lista das linhas já enviadas, com seu resultado</li>
+        <li><span class="tag">atual</span> a palavra sendo digitada na linha ativa</li>
+        <li><span class="tag">status</span> "jogando", "venceu" ou "perdeu"</li>
+        <li><span class="tag">estadoTeclas</span> a cor que cada tecla do teclado virtual deve assumir</li>
+        <li><span class="tag">mensagem</span> aviso temporário, tipo "Faltam letras"</li>
+    </ul>
+    <p>Separar em vários estados pequenos, em vez de um objeto único, deixa cada atualização mais simples de entender e evita re-renderizações desnecessárias.</p>
+
+    <h3>useEffect</h3>
+    <p>
+        Usado para registrar um listener de teclado físico (<code>window.addEventListener('keydown', ...)</code>)
+        assim que o componente entra na tela, e removê-lo quando sai. Sem isso, o jogo só responderia a cliques
+        no teclado virtual, ignorando o teclado de verdade.
+    </p>
+
+    <h3>useCallback</h3>
+    <p>
+        As funções <code>enviarTentativa</code> e <code>handleTecla</code> são memorizadas com
+        <code>useCallback</code> para não serem recriadas a cada renderização — importante porque
+        <code>handleTecla</code> é usada dentro do <code>useEffect</code> do teclado físico. Sem essa memorização,
+        o listener teria que ser removido e recriado a cada tecla digitada.
+    </p>
+
+    <h2>Lógica do jogo</h2>
+    <p>
+        A função <code>avaliarTentativa</code> é o coração do Termo. Ela compara, letra por letra, a tentativa do
+        jogador com a palavra-alvo, em duas passadas:
+    </p>
+    <ol>
+        <li>Marca como <strong>correta</strong> toda letra que está na posição certa.</li>
+        <li>Para as letras que sobraram, verifica se existem em outro lugar da palavra-alvo (e ainda não foram usadas), marcando como <strong>presente</strong>.</li>
+    </ol>
+    <div class="selo-cores">
+        <span class="selo correta">correta</span>
+        <span class="selo presente">presente</span>
+        <span class="selo ausente">ausente</span>
+    </div>
+    <div class="bloco-aviso">
+        Esse cuidado em duas passadas é necessário pra lidar direito com palavras de letras repetidas — um erro
+        comum em implementações apressadas do Wordle, que costumam marcar letras repetidas como presentes mais
+        vezes do que deveriam.
+    </div>
+
+    <h2>Estilização</h2>
+    <p>
+        Não foi usada nenhuma biblioteca de CSS. Os estilos vivem num arquivo <code>Termo.css</code> separado,
+        aplicado via classes (<code>className</code>) no JSX — sem inline styles espalhados pelo componente.
+        Isso deixa a lógica do jogo e a aparência dele em arquivos diferentes, facilitando trocar uma sem mexer
+        na outra.
+    </p>
+    <p>
+        A identidade visual escolhida — fundo bege claro, título serifado e letras do tabuleiro em fonte
+        monoespaçada — remete à estética de jornal impresso, reforçando a ideia de "jogo de palavras".
+    </p>
+
+    <h2>Por que não usar Redux ou Zustand?</h2>
+    <p>
+        Porque não é necessário. Todo o estado do jogo é local a um único componente — não há dados
+        compartilhados entre telas distantes nem necessidade de persistência complexa. Trazer uma biblioteca
+        externa de gerenciamento de estado aqui seria complexidade desnecessária para o tamanho real do problema.
+    </p>
+
+    <h2>Resumo da stack</h2>
+    <table>
+        <thead>
+            <tr><th>Camada</th><th>Tecnologia</th><th>Papel</th></tr>
+        </thead>
+        <tbody>
+            <tr><td>UI</td><td>React (componente funcional)</td><td>Renderizar tabuleiro, teclado e mensagens</td></tr>
+            <tr><td>Estado</td><td>useState</td><td>Guardar tentativas, palavra atual, status do jogo</td></tr>
+            <tr><td>Efeitos colaterais</td><td>useEffect</td><td>Capturar o teclado físico</td></tr>
+            <tr><td>Performance</td><td>useCallback</td><td>Evitar recriação desnecessária de funções</td></tr>
+            <tr><td>Lógica</td><td>JavaScript puro</td><td>Comparar a tentativa com a palavra-alvo</td></tr>
+            <tr><td>Estilo</td><td>CSS externo (Termo.css)</td><td>Visual do jogo via classes</td></tr>
+        </tbody>
+    </table>
+
+    <footer>feito com React + JavaScript puro — sem dependências externas além do próprio React</footer>
+</div>
+</body>
+</html>
